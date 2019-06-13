@@ -10,3 +10,7 @@ print(np.sum(a*b))
 print(a.T[0])
 print(b)
 print(b.T)
+print('--------------------')
+
+c = np.nonzero([2,5,0,4,9])
+print(c)
