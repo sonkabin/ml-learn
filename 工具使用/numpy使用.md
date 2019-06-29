@@ -14,8 +14,6 @@
            [50, 50]])
    ```
 
-   
-
 2. ```python
    matrix = matrix([[1, 2, 3],
            [4, 5, 6],
@@ -28,7 +26,15 @@
 
 
 
-3. 
+3. np.mean(a, axis=None, ...)
+
+   ```python
+   a = np.mat([[1,0,3],[0,5,6],[0,0,0]]) # 由于是二维数组，故axis最多为2个
+   print(np.mean(a)) # 所有数的均值，以数值表示	2.5
+   print(np.mean(a,axis=0)) # 每列的均值		
+   print(np.mean(a,axis=1)) # 每行的均值
+   print(np.mean(a,axis=(0,1))) # 所有数的均值，放在matrix中 	[[2.5]]
+   ```
 
 4. 
 

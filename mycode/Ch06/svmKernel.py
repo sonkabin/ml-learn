@@ -22,55 +22,21 @@ def clipAlpha(aj, H, L):
         aj = L
     return aj
 
-def smoSimple(dataMatIn, classLabels, C, toler, maxIter=10):
-    dataMatrix = np.mat(dataMatIn); labelMatrix = np.mat(classLabels).T
-    b = 0; m = np.shape(dataMatrix)[0]
-    alphas = np.mat(np.zeros((m, 1)))
-    iteration = 0
-    while(iteration < maxIter):
-        alphaPairsChanged = 0
-        for i in range(m):
-            gXi = float(np.multiply(alphas, labelMatrix).T * (dataMatrix*dataMatrix[i,:].T)) + b
-            Ei = gXi - float(labelMatrix[i])
-            if ((labelMatrix[i]*Ei < -toler ) and (alphas[i] < C)) or ((labelMatrix[i]*Ei > toler) and alphas[i] > 0):
-                j = selectJrand(i, m)
-                gXj = float(np.multiply(alphas, labelMatrix).T * (dataMatrix*dataMatrix[j,:].T)) + b
-                Ej = gXj - float(labelMatrix[j])
-                alphaIold = alphas[i].copy()
-                alphaJold = alphas[j].copy()
-                if (labelMatrix[i] != labelMatrix[j]):
-                    L = max(0, alphaJold - alphaIold)
-                    H = min(C, C + alphaJold - alphaIold)
-                else:
-                    L = max(0, alphaJold + alphaIold - C)
-                    H = min(C, alphaJold + alphaIold)
-                if L == H: print('L == H'); continue
-                # eta = Kii + Kjj - Kij*2
-                eta = 2.0 * dataMatrix[i,:]*dataMatrix[j,:].T - \
-                    dataMatrix[i,:]*dataMatrix[i,:].T - dataMatrix[j,:]*dataMatrix[j,:].T
-                if eta >= 0: print('eta>=0'); continue
-                alphas[j] -= labelMatrix[j] * (Ei - Ej) / eta
-                alphas[j] = clipAlpha(alphas[j], H, L)
-                if (abs(alphas[j] - alphaJold) < 0.00001): print('j not moving enough'); continue
-                alphas[i] += labelMatrix[j] * labelMatrix[i] * (alphaJold - alphas[j])
-                b1 = b - Ei - labelMatrix[i] * (alphas[i] - alphaIold) * dataMatrix[i,:]*dataMatrix[i,:].T - \
-                    labelMatrix[j]*(alphas[j] - alphaJold)*dataMatrix[i,:]*dataMatrix[j,:].T
-                b2 = b - Ej - labelMatrix[i] * (alphas[i] - alphaIold) * dataMatrix[i,:]*dataMatrix[j,:].T - \
-                    labelMatrix[j]*(alphas[j] - alphaJold)*dataMatrix[j,:]*dataMatrix[j,:].T
-                if (0 < alphas[i]) and (C > alphas[i]): b = b1
-                elif (0 < alphas[j]) and (C > alphas[j]): b = b2
-                else: b = (b1 + b2) / 2.0
-                alphaPairsChanged += 1
-                print('iter:', iteration, 'i:', i, ', pairs changed', alphaPairsChanged)
-        if (alphaPairsChanged == 0): iteration += 1
-        else: iteration = 0
-        print('iteration number:', iteration)
-    return b, alphas
-
-# 完整版SMO实现
+def kernelTrans(X, Xi, kTup):
+    m, n = np.shape(X)
+    K = np.mat(np.zeros((m,1)))
+    if kTup[0] == 'lin': K = X * Xi.T
+    elif kTup[0] == 'rbf':
+        for j in range(m):
+            deltaRow = X[j,:] - Xi
+            K[j] = deltaRow * deltaRow.T
+        K = np.exp(K / (-1*kTup[1]**2)) # **2表示平方
+    else:
+        raise NameError("Houston We Have a Problem, That Kernel is not recognized")
+    return K
 
 class optStruct:
-    def __init__(self,dataMatIn,classLabels,C,toler):
+    def __init__(self,dataMatIn,classLabels,C,toler, kTup):
         self.X = dataMatIn
         self.labelMat = classLabels
         self.C = C
@@ -80,9 +46,12 @@ class optStruct:
         self.b = 0
         # eCache第一列给出eCache是否有效的标志位，第二列给出实际的E
         self.eCache = np.mat(np.zeros((self.m,2)))
+        self.K = np.mat(np.zeros((self.m, self.m)))
+        for i in range(self.m):
+            self.K[:,i] = kernelTrans(self.X, self.X[i,:], kTup)
 
 def calEk(oS, k):
-    gXK = float(np.multiply(oS.alphas,oS.labelMat).T * (oS.X*oS.X[k,:].T)) + oS.b
+    gXK = float(np.multiply(oS.alphas,oS.labelMat).T * oS.K[:,k]) + oS.b
     Ek = gXK - float(oS.labelMat[k])
     return Ek
 
@@ -121,7 +90,7 @@ def innerL(i, oS): # 内层循环
             L = max(0, alphaJold + alphaIold - oS.C)
             H = min(oS.C, alphaJold + alphaIold)
         if L == H: print('L == H'); return 0
-        eta = 2.0 * oS.X[i,:]*oS.X[j,:].T - oS.X[i,:]*oS.X[i,:].T - oS.X[j,:]*oS.X[j,:].T
+        eta = 2.0 * oS.K[i,j] - oS.K[i,i] - oS.K[j,j]
         if eta >= 0: print('eta>=0'); return 0
         oS.alphas[j] -= oS.labelMat[j]*(Ei - Ej)/eta
         oS.alphas[j] = clipAlpha(oS.alphas[j], H, L)
@@ -129,10 +98,10 @@ def innerL(i, oS): # 内层循环
         if (abs(oS.alphas[j] - alphaJold) < 0.00001):   print('j not moving enough');   return 0
         oS.alphas[i] += oS.labelMat[j]*oS.labelMat[i]*(alphaJold-oS.alphas[j])
         updateEk(oS, i)
-        b1 = oS.b - Ei - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.X[i,:]*oS.X[i,:].T - \
-             oS.labelMat[j]*(oS.alphas[j] - alphaJold)*oS.X[i,:]*oS.X[j,:].T
-        b2 = oS.b - Ej - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.X[i,:]*oS.X[j,:].T - \
-             oS.labelMat[i]*(oS.alphas[j] - alphaJold)*oS.X[j,:]*oS.X[j,:].T
+        b1 = oS.b - Ei - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.K[i,i] - \
+             oS.labelMat[j]*(oS.alphas[j] - alphaJold)*oS.K[i,j]
+        b2 = oS.b - Ej - oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.K[i,j] - \
+             oS.labelMat[i]*(oS.alphas[j] - alphaJold)*oS.K[j,j]
         if 0 < oS.alphas[i] and oS.C > oS.alphas[i]:  oS.b = b1
         elif 0 < oS.alphas[j] and oS.C > oS.alphas[j]: oS.b = b2
         else:   oS.b = (b1 + b2) / 2.0
@@ -146,9 +115,8 @@ b,alphas = svm.smoP(dataArr,labelArr,0.6,0.001,40)
 
 from importlib import reload
 '''
-#C的作用：C一方面保证所有样例的间隔不小于1.0，另一方面使分类间隔尽可能大；若C很大，则分类器力图对所以样例分类正确
 def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
-    oS = optStruct(np.mat(dataMatIn),np.mat(classLabels).T, C, toler)
+    oS = optStruct(np.mat(dataMatIn),np.mat(classLabels).T, C, toler, kTup)
     iteration = 0
     entireSet = True; alphaPairsChanged = 0
     while (iteration < maxIter) and ((alphaPairsChanged > 0) or entireSet): # 达到迭代次数，或者遍历整个数据集后没有alpha发生变化，则结束
@@ -169,12 +137,28 @@ def smoP(dataMatIn, classLabels, C, toler, maxIter, kTup=('lin', 0)):
         print('iteration number:', iteration) # 注意：此处的iteration和simpleSmo中的不同，这里是一次循环过程记为一次迭代
     return oS.b, oS.alphas
                  
-
-def calWs(alphas,dataArr,classLabels):
-    X = np.mat(dataArr)
-    labelMat = np.mat(classLabels).T
-    m,n = np.shape(X)
-    w = np.zeros((n,1))
+def testRbf(k1=1.3):
+    dataArr, labelArr = loadDataSet('./mycode/Ch06/testSetRBF.txt')
+    b,alphas = smoP(dataArr,labelArr,200,0.0001,10000,('rbf',k1))
+    dataMat = np.mat(dataArr); labelMat = np.mat(labelArr).T
+    svIndex = np.nonzero(alphas.A>0)[0]
+    sVs = dataMat[svIndex]
+    labelSV = labelMat[svIndex]
+    print('there are', np.shape(sVs)[0],'support vectores')
+    m,n = np.shape(dataMat)
+    errorCount = 0
     for i in range(m):
-        w += np.multiply(alphas[i]*labelMat[i],X[i,:].T)
-    return w
+        kernelEval = kernelTrans(sVs, dataMat[i,:], ('rbf', k1))
+        predict = kernelEval.T * np.multiply(labelSV, alphas[svIndex]) + b
+        if np.sign(predict) != np.sign(labelArr[i]):    errorCount += 1
+    print('the training error rate is:', float(errorCount)/m)
+
+    dataArr, labelArr = loadDataSet('./mycode/Ch06/testSetRBF2.txt')
+    dataMat = np.mat(dataArr); labelMat = np.mat(labelArr).T
+    m, n = np.shape(dataMat)
+    errorCount = 0
+    for i in range(m):
+        kernelEval = kernelTrans(sVs, dataMat[i,:], ('rbf', k1))
+        predict = kernelEval.T * np.multiply(labelMat[i], alphas[svIndex]) + b
+        if np.sign(predict) != np.sign(labelArr[i]):    errorCount += 1
+    print('the test error rate is:', float(errorCount)/m)
