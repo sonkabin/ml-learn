@@ -11,7 +11,7 @@ import mycode.Ch13.pca as pca
 import numpy as np
 dataArr = pca.loadDataSet('./mycode/Ch13/testSet.txt')
 lowDMat, reconMat = pca.pca(dataArr)
-pca.plot(lowDMat, reconMat)
+pca.plot(np.mat(dataArr), reconMat)
 
 from importlib import reload
 '''
@@ -20,12 +20,16 @@ def pca(dataSet, topNfeat=9999999):
     meanVals = np.mean(dataMat, axis=0)
     meanRemoved = dataMat - meanVals
     covMat = np.cov(meanRemoved, rowvar=0) # 协方差矩阵
-    eigVals, eigVects = np.linalg.eig(np.mat(covMat)) # 求解特征值与特征向量
+    eigVals, eigVects = np.linalg.eig(np.mat(covMat)) # 求解特征值与特征向量，其中特征向量是列向量
     eigValIndex = np.argsort(eigVals)
-    eigValIndex = eigValIndex[:-(topNfeat+1):-1]
+    eigValIndex = eigValIndex[:-(topNfeat+1):-1] # 取topNfeat个较大特征对应的索引
     redEigVects = eigVects[:,eigValIndex]
     lowDDataMat = meanRemoved * redEigVects
     reconMat = (lowDDataMat * redEigVects.T) + meanVals
+    print(eigVects)
+    print(redEigVects)
+    print(eigVects * eigVects.T)
+    print(redEigVects * redEigVects.T)
     return lowDDataMat, reconMat
 
 def plot(dataMat, reconMat):
