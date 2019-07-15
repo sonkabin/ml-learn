@@ -20,7 +20,6 @@
    from b import d
    ```
 
-   
 
 ## reload()
 
@@ -28,5 +27,17 @@
 from imp import reload #__main__:1: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
 # 故使用如下模块
 from importlib import reload
+```
+
+
+
+## 字典排序
+
+sorted(iterable,key,reverse)
+
+iterable可以是dict.items()、dict.keys()、dict.values()
+
+```python
+sorted(dict.values()) # 等价于 sorted(dict.items(), key=lambad e:e[1])
 ```
 
