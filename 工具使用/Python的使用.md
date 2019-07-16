@@ -41,3 +41,25 @@ iterable可以是dict.items()、dict.keys()、dict.values()
 sorted(dict.values()) # 等价于 sorted(dict.items(), key=lambad e:e[1])
 ```
 
+
+
+## list的extend和append
+
+```python
+l = [1,2,3]
+a = l[:1]
+a.append(l[2:]) # [1, [3]]
+l = [1,2,3]
+a = l[:1]
+a.extend(l[2:]) # [1, 3]
+```
+
+
+
+## 字典的keys()
+
+返回dict_keys对象，py3中不能直接用索引
+
+1. list(d.keys())[0]
+2. next(iter(d.keys()))
+
