@@ -63,3 +63,20 @@ a.extend(l[2:]) # [1, 3]
 1. list(d.keys())[0]
 2. next(iter(d.keys()))
 
+
+
+## Python对象
+
+python只有对象（函数也是），函数有\_\_doc\_\_属性，函数的属性处理有两种方式
+
+```python
+def foo():
+    pass
+# 方式1
+setattr(foo, 'a', 12)
+print(getattr(foo, 'a'))
+# 方式2
+foo.a = 1
+print(foo.a)
+```
+
