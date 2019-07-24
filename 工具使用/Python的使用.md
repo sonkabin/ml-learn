@@ -80,3 +80,23 @@ foo.a = 1
 print(foo.a)
 ```
 
+
+
+## [0] * 3的意义
+
+[0] * 3 等于 [0, 0, 0]
+
+
+
+## 获取文件编码
+
+```python
+with open('1.txt', 'rb') as f:
+    print(chardet.detect(f.read())['encoding']) 
+```
+
+
+
+## 正则表达式
+
+re模块。使用原生字符串可以解决反斜杠的困扰，如`r'\d'`匹配一个数字，`r'\\'`匹配反斜杠
