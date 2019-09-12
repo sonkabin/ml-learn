@@ -2,6 +2,8 @@
 .vscode
 资料/
 test/
+DL/NNandDL/src
+DL/NNandDL/neural-networks-and-deep-learning-master.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

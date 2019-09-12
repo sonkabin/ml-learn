@@ -91,6 +91,7 @@ print(foo.a)
 ## 获取文件编码
 
 ```python
+import chardet
 with open('1.txt', 'rb') as f:
     print(chardet.detect(f.read())['encoding']) 
 ```
@@ -110,5 +111,43 @@ a = set([1,2,3,4])
 b = set([2,5])
 print(a - b) # {1,3,4}，即取差集
 print(a | b) # {1,2,3,4,5},即取并集
+```
+
+
+
+## range
+
+```python
+for i in range(0, 10, 2):	print(i) # 0, 2, 4, 6, 8
+for i in range(0, 10, 3):	print(i) # 0, 3, 6, 9
+
+a = [1,2,3,4,5,6,7,8,9,10]
+c = [a[i:i+3]for i in range(0, 10, 3)] # [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+```
+
+
+
+## zip
+
+```python
+'''
+也适用于numpy
+zip(iter1 [,iter2 [...]]) --> zip object
+
+Return a zip object whose .__next__() method returns a tuple where the i-th element comes from the i-th iterable argument. The .__next__() method continues until the shortest iterable in the argument sequence is exhausted and then it raises StopIteration.
+翻译：它返回zip对象，它的__next__()方法：返回iter1, iter2, ...中取相同索引的元素组成tuple，当某个iter达到最后一个元素时停止
+'''
+for i in zip([1,2,7], [4,5,8,9], [6,6,6]):	print(i) # (1,4,6),(2,5,6),(7,8,6)
+for i in zip([1,2], [4,5,8,9], [6,6,6]):	print(i) # (1,4,6),(2,5,6)
+```
+
+
+
+## 广播
+
+```python
+(m, n), (1, n), (m, 1) are matrix
+(m, n) +-*/ (1, n) ==> (m, n) # (1, n)扩展为(m, n)
+(m, n) +-*/ (m, 1) ==> (m, n) # (m, 1)扩展为(m ,n)
 ```
 
