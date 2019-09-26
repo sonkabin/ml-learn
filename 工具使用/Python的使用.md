@@ -151,3 +151,42 @@ for i in zip([1,2], [4,5,8,9], [6,6,6]):	print(i) # (1,4,6),(2,5,6)
 (m, n) +-*/ (m, 1) ==> (m, n) # (m, 1)扩展为(m ,n)
 ```
 
+
+
+## 类
+
+定义类
+
+```python
+class a(object):
+    def walk(self):
+        print('a walk')
+```
+
+继承类
+
+```python
+class b(a):
+    def walk(self): # 重写父类方法
+        print('b walk')
+    def talk(self): # 自定义方法
+        print('b talk')
+```
+
+
+
+## enumerate()函数
+
+参数：
+
+- sequence -- 一个序列、迭代器或其他支持迭代对象
+- start -- 下标起始位置
+
+将一个可遍历的数据对象，列出数据和数据下标
+
+```python
+seq = ['one', 'two', 'three']
+for i, element in enumerate(seq, 0):
+    print(i, element) # 0 one		1 two 		2 three
+```
+
