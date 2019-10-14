@@ -91,3 +91,8 @@ output.backward()
 ### LogSoftmax
 
 对softmax取自然对数：ln(softmax)
+
+
+
+### 
+

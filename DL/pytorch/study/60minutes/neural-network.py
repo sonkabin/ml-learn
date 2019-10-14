@@ -43,6 +43,8 @@ print(net)
 params = list(net.parameters())
 print(len(params))
 print(params[0].size())  # conv1's .weight
+for i in range(len(params)):
+    print('i:', i, ',size:', params[i].size())
 
 inpt = torch.randn(1, 1, 32, 32)
 output = net(inpt) # 输入经过神经网络之后的10个输出值
