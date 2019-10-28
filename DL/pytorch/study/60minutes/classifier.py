@@ -2,6 +2,9 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
+'''the images in CIFAR10 are of size 3*32*32
+'''
+
 # The output of torchvision datasets are PILImage images of range [0, 1]
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 trainset = torchvision.datasets.CIFAR10(root='./DL/pytorch/data', train=True, # if train=True, creates datasets from training set
@@ -42,7 +45,7 @@ import torch.nn.functional as F
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5) # 因为是RGB，所以输入是3通道
+        self.conv1 = nn.Conv2d(3, 6, 5) # 因为是RGB，所以输入是3通道 
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * 5 * 5, 120)
@@ -50,9 +53,9 @@ class Net(nn.Module):
         self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
+        x = self.pool(F.relu(self.conv1(x))) # (3, 32, 32) ->cov1 (6, 28, 28) ->relu (6, 28, 28) ->pool (6, 14,14)
+        x = self.pool(F.relu(self.conv2(x))) # (6, 14, 14) ->cov2 (16, 10, 10) ->relu (16, 10, 10) -> pool (16, 5, 5)
+        x = x.view(-1, 16 * 5 * 5) 
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
