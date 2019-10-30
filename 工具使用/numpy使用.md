@@ -28,7 +28,7 @@
 
 
 
-3. np.mean(a, axis=None, ...)
+3. `np.mean(a, axis=None, ...)`
 
    ```python
    a = np.mat([[1,0,3],[0,5,6],[0,0,0]]) # 由于是二维数组，故axis最多为2个
@@ -38,7 +38,7 @@
    print(np.mean(a,axis=(0,1))) # 所有数的均值，放在matrix中 	[[2.5]]
    ```
 
-4. np.var(a, axis=None,...)
+4. `np.var(a, axis=None,...)`
 
    求**方差**，默认是所有数据的方差。axis=0按列，axis=1按行
 
@@ -47,7 +47,7 @@
    a / 2 # [0.5, 1, 1.5]
    ```
 
-6. np.tile(A, reps)：构造数组，重复A reps次
+6. `np.tile(A, reps)`：构造数组，重复A reps次
 
    ```python
    a = np.tile([1,2,3],2) # [1 2 3 1 2 3]
@@ -60,5 +60,21 @@
    len(a) 等价于 np.shape(a)[0]
    ```
 
-8. 
+8. `np.vstack()`：将n\*1 reshape为1\*n，type为numpy.ndarray
+
+   ```python
+   a1 = np.linspace(-1, 1, 3) # [-1, 0, 1]
+   a2 = np.vstack(a1) # [[-1], [0], [1]]
+   # 对于list
+   b1 = [np.linspace(-1, 1, 3) for _ in range(5)] # 5个array
+   b2 = np.vstack(b1) # 3*5
+   ```
+
+9. `np.random.uniform()`：返回ndarry or scalar
+
+   ```python
+   a = np.random.uniform(1, 2, size=3) # [1.14688523 1.63880608 1.75369664].  区间[1,2)
+   ```
+
+10. 
 
