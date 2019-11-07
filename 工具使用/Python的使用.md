@@ -190,3 +190,8 @@ for i, element in enumerate(seq, 0):
     print(i, element) # 0 one		1 two 		2 three
 ```
 
+
+
+## ord(c)
+
+返回c字符的Unicode编码

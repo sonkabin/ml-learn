@@ -76,5 +76,14 @@
    a = np.random.uniform(1, 2, size=3) # [1.14688523 1.63880608 1.75369664].  区间[1,2)
    ```
 
-10. 
+10. `np.newaxis`：NoneType
+
+    ```python
+    x = np.linspace(-1 ,1, 3)[:, np.newaxis] # 3×1矩阵
+    z = np.linspace(-1 ,1, 3)[np.newaxis, :] # 1×3矩阵
+    ```
+
+11. `np.random.normal(loc=0.0, scale=1.0, size=None)`：loc均值，scale标准差，size返回的shape。高斯分布
+
+12. 
 
