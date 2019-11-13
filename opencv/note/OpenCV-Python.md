@@ -35,4 +35,10 @@
    # 因此呢，[:,:,::-1]第一个冒号表示第一维，第二个冒号表示第二维，第三个和上面的解释相同
    ```
 
-3. 
+3. **img.dtype** is very important while debugging because a large number of errors in OpenCV-Python code is caused by invalid datatype.
+
+4. cv.destroyAllWindows() 和cv.destroyWindow() 
+
+   **cv.destroyAllWindows()**见名知意，**cv.destroyWindow() **传入window的name
+
+5. 
