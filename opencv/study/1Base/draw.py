@@ -20,7 +20,7 @@ pts = pts.reshape((-1, 1, 2))
 cv.polylines(img,[pts],True,(0,255,255)) # 是否闭合
 
 pts2 = np.array([[70, 5], [90, 30], [130, 20], [110, 10]], np.int32)
-cv.polylines(img, [pts2], False, 255) 
+cv.polylines(img, [pts2], False, 255, 3) 
 
 font = cv.FONT_HERSHEY_SIMPLEX
 cv.putText(img, 'OpenCV', (10, 500), font, 1, (255, 255, 255), 2, cv.LINE_AA)

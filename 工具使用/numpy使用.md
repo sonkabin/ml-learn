@@ -85,5 +85,11 @@
 
 11. `np.random.normal(loc=0.0, scale=1.0, size=None)`：loc均值，scale标准差，size返回的shape。高斯分布
 
-12. 
+12. `np.flatten()`与`np.ravel()`
+
+    **相同**：都用于将多维数组降为一维数组，类型为`numpy.ndarray`，转为list类型可用`np.flatten().tolist()`
+
+    **区别**：`np.flatten()`复制多维数组的拷贝，而`np.ravel()`是原来数组的视图。也就是说对于`np.flatten()`得到的数组进行修改不影响原数组，而对`np.ravel()`得到的数组进行修改影响原数组。
+
+13. 
 
