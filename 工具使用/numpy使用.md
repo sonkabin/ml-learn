@@ -103,5 +103,9 @@
     t3[:, :, 1] = 255 # t1 == t3
     ```
 
-14. 
+14. `np.save()`、`np.savez()`、`np.load()`
+
+    [scipy numpy doc](https://docs.scipy.org/doc/numpy/reference/generated/numpy.save.html)
+
+15. 
 

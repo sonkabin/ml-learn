@@ -15,8 +15,8 @@ def chessboard():
     objpoints = [] # 3d point in real world space
     imgpoints = [] # 2d points in image plane.
 
-    base_path = 'opencv/data/chess/'
-    images = glob.glob(base_path + '*.jpg')
+    base_path = 'opencv/data/'
+    images = glob.glob(base_path + 'chess/*.jpg')
 
     for fname in images:
         img = cv.imread(fname)
@@ -41,7 +41,7 @@ def chessboard():
     ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     # Undistortion: 1. Using cv.undistort(); 2. Using remapping
-    img = cv.imread(base_path + 'left12.jpg')
+    img = cv.imread(base_path + 'chess/left12.jpg')
     h,  w = img.shape[:2]
     newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
@@ -54,7 +54,7 @@ def chessboard():
     cv.waitKey(0)
     cv.destroyWindow('calibresult')
     # 2. remapping
-    img = cv.imread(base_path + 'left12.jpg')
+    img = cv.imread(base_path + 'chess/left12.jpg')
     h,  w = img.shape[:2]
     mapx, mapy = cv.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w,h), 5)
     dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
@@ -72,8 +72,8 @@ def chessboard():
         mean_error += error
     print('total error:', mean_error/len(objpoints))
 
-def circle_grid():
-    pass
+    # save inter and exter params
+    np.savez(base_path + 'B.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
 
 if __name__ == "__main__":
     chessboard()
