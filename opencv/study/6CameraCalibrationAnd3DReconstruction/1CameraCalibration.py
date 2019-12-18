@@ -76,4 +76,4 @@ def circle_grid():
     pass
 
 if __name__ == "__main__":
-    # chessboard()
+    chessboard()
