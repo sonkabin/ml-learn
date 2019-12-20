@@ -65,7 +65,8 @@ def flann_match(img1, img2):
     # If k=2, it will draw two match-lines for each keypoint. 
     # So we have to pass a mask if we want to selectively draw it.
     # We will take k=2 so that we can apply ratio test explained by D.Lowe in his paper.
-    matches = flann.knnMatch(des1, des2, k=2) 
+    matches = flann.knnMatch(des1, des2, k=2) # 我们得到每个matches中的两个距离:(最小的，次小的)
+    print(len(kp1), len(kp2), len(matches)) 
     # Need to draw only good matches, so create a mask
     matchesMask = [[0,0] for i in range(len(matches))]
 
@@ -85,6 +86,9 @@ def flann_match(img1, img2):
     cv.waitKey(0)
     cv.destroyAllWindows()
 
+'''Let me explain the 'Matcher'.
+在第一组中选择一个特征，将其与第二组的所有特征做距离计算，选择k个最短距离
+'''
 if __name__ == "__main__":
     base_path = 'opencv/data/'
     img1 = cv.imread(base_path + 'box.png', 0) # queryImage

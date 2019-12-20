@@ -79,4 +79,8 @@
 
     [代码示例](<https://docs.opencv.org/master/df/d9d/tutorial_py_colorspaces.html>)
 
-11. 
+11. epipole, epipolar lines, epipolar constraint
+
+    [Epipolar Geometry](https://docs.opencv.org/master/da/de9/tutorial_py_epipolar_geometry.html)
+
+12. 
