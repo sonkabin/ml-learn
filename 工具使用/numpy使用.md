@@ -60,7 +60,7 @@
    len(a) 等价于 np.shape(a)[0]
    ```
 
-8. `np.vstack()`：将n\*1 reshape为1\*n，type为numpy.ndarray
+8. `np.vstack()`、`np.vsplit()`、`np.hstack()`、`np.hsplit()`
 
    ```python
    a1 = np.linspace(-1, 1, 3) # [-1, 0, 1]
@@ -68,6 +68,11 @@
    # 对于list
    b1 = [np.linspace(-1, 1, 3) for _ in range(5)] # 5个array
    b2 = np.vstack(b1) # 3*5
+   # np.vstack()和np.vsplit()属于相反操作
+   # np.hstack()和np.hsplit()属于相反操作
+   # np.vstack()按第一维叠, np.hstack()按第二维叠
+   
+   # 如果是两组N个元素的数组，用了np.hstack()后得到的是2N*1维；而用np.vstack()得到的是N*2维
    ```
 
 9. `np.random.uniform()`：返回ndarry or scalar
@@ -107,5 +112,16 @@
 
     [scipy numpy doc](https://docs.scipy.org/doc/numpy/reference/generated/numpy.save.html)
 
-15. 
+15. 迷惑性行为
+
+    ```python
+    # 这份代码对否?
+    a = np.random.randint(1, 5, (100,3))
+    b = np.random.randint(0, 100, (789456, 1))
+    c = a[b.flatten()]
+    ```
+
+    **结果为789456*3维数组，只要b的取值范围在a的第一维以内即可**
+
+16. 
 
